@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Профиль</title>
+	<link rel="stylesheet" href="/static/css/styles_profile.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+	<header>
+		<nav>
+			<ul class="menu">
+				{% for item in menu %}
+				{% if item.class == "menu" %}<li><a href="{{item.url}}">{{item.name}}</a></li>{% else %}{% endif %}
+				{% endfor %}
+			</ul>
+		</nav>
+		<div class="login">
+			{% for item in menu %}
+				{% if item.class == "login" %}
+					<a href="{{item.url}}">{{item.name}}</a>
+				{% endif %}
+			{% endfor %}
+		</div>
+	</header>
+	<main>
+		<div class="container">
+			<div class="sidebar">
+				<div class="tab" onclick="openTab(event, 'profile')">Профиль</div>
+				<div class="tab" onclick="openTab(event, 'stats')">Статистика</div>
+				<div class="tab" onclick="openTab(event, 'settings')">Настройки</div>
+			</div>
+			<div class="content">
+				<div id="profile" class="tab-content">
+					<h2>Профиль</h2>
+					<div class="profile-info">
+						<img id="current-avatar" src="{{user_data.activate_url}}" alt="Avatar" class="avatar" onclick="openAvatarModal()">
+						<div class="profile-details">
+							<p>Имя пользователя: <strong>{{user_data.username}}</strong></p>
+							<p>Количество монет: <strong>{{user_data.money}}</strong></p>
+							<p>Количество трофеев: <strong>{{user_data.trophies}}</strong></p>
+						</div>
+					</div>
+				</div>				
+				<div id="stats" class="tab-content">
+					<h2>Статистика</h2>
+					<div class="stats-info">
+						
+						<div class="stats-details">
+							<p>Сыграно игр: <strong>{{all_games_statistics.total_games}}</strong></p>
+							<p>Победы: <strong>{{all_games_statistics.wins}}</strong></p>
+							<p>Поражения: <strong>{{all_games_statistics.losses}}</strong></p>
+							<p>Ничьи: <strong>{{all_games_statistics.draw}}</strong></p>
+							<p>Максимальное кол-во очков: <strong>{{all_games_statistics.max_score}}</strong></p>
+						</div>
+					</div>
+					<h3>Последние 3 игры</h3>
+					<div class="game-log">
+						{% for game in last_games %}
+							<div class="game-log-item">
+								{% if game.pl1_name == game.pl_win %}
+								<p>{{game.pl1_name}} <strong>{{game.pl1_count}}</strong> : {{game.pl2_count}} {{game.pl2_name}}</p>
+								{% elif game.pl1_name == 0 %}
+								<p>{{game.pl1_name}} {{game.pl1_count}} : {{game.pl2_count}} {{game.pl2_name}}</p>
+								{% else %}
+								<p>{{game.pl1_name}} {{game.pl1_count}} : <strong>{{game.pl2_count}}</strong> {{game.pl2_name}}</p>
+								{% endif %}
+								{% if game.pl1_name == 0 %}
+								<p class="winner">(Ничья)</p>
+								{% else %}
+								<p class="winner">(Победитель: {{game.pl_win}})</p>
+								{% endif %}
+							</div>
+						{% endfor %}
+					</div>
+				</div>				
+				<div id="settings" class="tab-content">
+					<h2>Настройки</h2>
+					<form class="settings-form">
+						<label for="username">Изменить имя пользователя:</label>
+						<input type="text" id="username" name="username" placeholder="Новое имя пользователя">
+
+						<label for="current-password">Текущий пароль:</label>
+						<input type="password" id="current-password" name="current-password" placeholder="Введите текущий пароль">
+						
+						<label for="password">Изменить пароль:</label>
+						<input type="password" id="password" name="password" placeholder="Новый пароль">
+						
+						<button type="submit">Сохранить изменения</button>
+					</form>
+				</div>
+				
+			</div>
+		</div>
+		<!-- Модальное окно выбора аватара -->
+		<div id="avatarModal" class="modal">
+			<div class="modal-content">
+				<span class="close" onclick="closeAvatarModal()">&times;</span>
+				<h3>Выберите аватар</h3>
+				<div class="avatar-selection">
+					<img src="/static/images/avatar/lamb-icon.png" class="avatar-option" id="0" onclick="selectAvatar('/static/images/avatar/lamb-icon.png')">
+					{% for item in inventory_items %}
+						<img src="{{item.url}}" class="avatar-option" id="{{item.id}}" onclick="selectAvatar('{{item.url}}')">
+					{% endfor %}
+				</div>
+			</div>
+		</div>
+	</main>
+    <script src="/static/js/script_profile.js"></script>
+
+
+  <script>
+	/* 
+	<div class="pie-chart-container">
+		<canvas id="pieChart"></canvas>
+	</div>
+	*/
+
+	// Открытие модального окна
+	function openAvatarModal() {
+	  document.getElementById("avatarModal").style.display = "block";
+	}
+  
+	// Закрытие модального окна
+	function closeAvatarModal() {
+	  document.getElementById("avatarModal").style.display = "none";
+	}
+  
+	// Выбор аватара
+	function selectAvatar(avatarSrc) {
+	  	document.getElementById("current-avatar").src = avatarSrc;
+	  	closeAvatarModal();
+
+		fetch('/api/auth/set-avatar', {
+			method: 'PUT',
+			headers: {
+			'Content-Type': 'application/json',
+			},
+			body: JSON.stringify({ url: avatarSrc })
+		})
+		.then(data => {
+			if (data.status) {
+				console.log('Аватарка успешно установленна!');
+			} else {
+				console.log('Ошибка при покупке товара: ' + data.message);
+			}
+		})
+		.catch(error => {
+		  	console.log('Произошла ошибка при покупке товара.');
+		});
+	}
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,86 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: #0a0a0a;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    font-family: Arial, sans-serif;
+}
+
+.loading-container {
+    text-align: center;
+    color: #ffffff;
+}
+
+.loading-animation {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.loading-circle {
+    width: 50px;
+    height: 50px;
+    border: 5px solid #ffffff;
+    border-top: 5px solid #ff6124;
+    border-radius: 50%;
+    animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.loading-text {
+    font-size: 24px;
+    margin-bottom: 20px;
+    animation: fadeIn 2s ease-in-out infinite alternate;
+}
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0.5;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+.loading-status {
+    font-size: 18px;
+    animation: blink 1.5s infinite step-start;
+    margin-bottom: 20px;
+}
+
+@keyframes blink {
+    50% {
+        opacity: 0.5;
+    }
+}
+
+.cancel-btn {
+    padding: 10px 20px;
+    background-color: #ff3a00;
+    color: #ffffff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+}
+
+.cancel-btn:hover {
+    background-color: #ff6124;
+}

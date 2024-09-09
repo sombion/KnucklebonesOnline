@@ -1,0 +1,197 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="games">
+    <!-- Opponent's Field (Top) -->
+    <div class="player" id="player-right">
+        <div class="player-score" id="op_current_count">{{op_current_count}}</div>
+        <img src="{{op_url}}" alt="Rat Icon">
+        <div class="player-name">{{op_name}}</div>
+        <div class="player-score" id="op_count">{{op_count}}</div>
+    </div>
+
+    <div class="game-container">
+        <!-- Player's Field -->
+        <div class="player-field">
+            <div class="board" id="op_lock">
+                <div class="column" data-column="1">
+                    <div class="tile {{ op_1_3_color[2] }}" id="op_3">{{ op_1_3[2] }}</div>
+                    <div class="tile {{ op_1_3_color[1] }}" id="op_2">{{ op_1_3[1] }}</div>
+                    <div class="tile {{ op_1_3_color[0] }}" id="op_1">{{ op_1_3[0] }}</div>
+                </div>
+                <div class="column" data-column="2">
+                    <div class="tile {{ op_1_3_color[5] }}" id="op_6">{{ op_1_3[5] }}</div>
+                    <div class="tile {{ op_1_3_color[4] }}" id="op_5">{{ op_1_3[4] }}</div>
+                    <div class="tile {{ op_1_3_color[3] }}" id="op_4">{{ op_1_3[3] }}</div>
+                </div>
+                <div class="column" data-column="3">
+                    <div class="tile {{ op_1_3_color[8] }}" id="op_9">{{ op_1_3[8] }}</div>
+                    <div class="tile {{ op_1_3_color[7] }}" id="op_8">{{ op_1_3[7] }}</div>
+                    <div class="tile {{ op_1_3_color[6] }}" id="op_7">{{ op_1_3[6] }}</div>
+                </div>
+            </div>
+            <div class="column-headers">
+                <div class="column-header" id="op_sum_1">{{ op_1_2_3[0] }}</div>
+                <div class="column-header" id="op_sum_2">{{ op_1_2_3[1] }}</div>
+                <div class="column-header" id="op_sum_3">{{ op_1_2_3[2] }}</div>
+            </div>
+        </div>
+
+        <!-- Opponent's Field -->
+        <div class="opponent-field">
+            <div class="column-headers">
+                <div class="column-header" id="pl_sum_1">{{ pl_1_2_3[0] }}</div>
+                <div class="column-header" id="pl_sum_2">{{ pl_1_2_3[1] }}</div>
+                <div class="column-header" id="pl_sum_3">{{ pl_1_2_3[2] }}</div>
+            </div>
+            {% if pl_current_count %}
+            <div class="board opponent-board" id="pl_lock">
+            {% else %}
+            <div class="board" id="pl_lock">
+            {% endif %}
+                <div class="column" data-column="1">
+                    <div class="tile {{ pl_1_3_color[0] }}" id="pl_1">{{ pl_1_3[0] }}</div>
+                    <div class="tile {{ pl_1_3_color[1] }}" id="pl_2">{{ pl_1_3[1] }}</div>
+                    <div class="tile {{ pl_1_3_color[2] }}" id="pl_3">{{ pl_1_3[2] }}</div>
+                </div>
+                <div class="column" data-column="2">
+                    <div class="tile {{ pl_1_3_color[3] }}" id="pl_4">{{ pl_1_3[3] }}</div>
+                    <div class="tile {{ pl_1_3_color[4] }}" id="pl_5">{{ pl_1_3[4] }}</div>
+                    <div class="tile {{ pl_1_3_color[5] }}" id="pl_6">{{ pl_1_3[5] }}</div>
+                </div>
+                <div class="column" data-column="3">
+                    <div class="tile {{ pl_1_3_color[6] }}" id="pl_7">{{ pl_1_3[6] }}</div>
+                    <div class="tile {{ pl_1_3_color[7] }}" id="pl_8">{{ pl_1_3[7] }}</div>
+                    <div class="tile {{ pl_1_3_color[8] }}" id="pl_9">{{ pl_1_3[8] }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Player's Field (Bottom) -->
+    <div class="player" id="player-left">
+        <img src="{{pl_url}}" alt="Lamb Icon">
+        <div class="player-name">{{pl_name}}</div>
+        <div class="player-score" id="pl_count">{{pl_count}}</div>
+        <div class="player-score" id="pl_current_count">{{pl_current_count}}</div>
+    </div>
+        <script>
+			document.querySelectorAll('.board .column').forEach((column, index) => {
+				column.addEventListener('click', () => {
+                    if ( 0 < index - 2 && index - 2 <= 3) {
+                        var messageData = {
+                            user_name: client_name,
+                            id_game: {{id_game}},
+                            number: index - 2
+                        };
+                    
+                        // Сериализация JSON-объекта в строку перед отправкой
+                        ws.send(JSON.stringify(messageData));
+                        //input.value = 0
+                        event.preventDefault()
+
+                        console.log(`Column ${index - 2} clicked!`);
+                    }
+				});
+			});
+			
+
+            var client_name = "{{pl_name}}"
+            var ws = new WebSocket(`ws://localhost:8000/games/ws`);
+            ws.onmessage = function(event) {
+				var receivedData = JSON.parse(event.data);
+				document.getElementById("pl_count").textContent = receivedData.pl_count
+
+				document.getElementById("pl_1").textContent = receivedData.pl_1_3[0]
+				document.getElementById("pl_1").className = "tile " + receivedData.pl_1_3_color[0]
+				document.getElementById("pl_2").textContent = receivedData.pl_1_3[1]
+				document.getElementById("pl_2").className = "tile " + receivedData.pl_1_3_color[1]
+				document.getElementById("pl_3").textContent = receivedData.pl_1_3[2]
+				document.getElementById("pl_3").className = "tile " + receivedData.pl_1_3_color[2]
+				document.getElementById("pl_4").textContent = receivedData.pl_1_3[3]
+				document.getElementById("pl_4").className = "tile " + receivedData.pl_1_3_color[3]
+				document.getElementById("pl_5").textContent = receivedData.pl_1_3[4]
+				document.getElementById("pl_5").className = "tile " + receivedData.pl_1_3_color[4]
+				document.getElementById("pl_6").textContent = receivedData.pl_1_3[5]
+				document.getElementById("pl_6").className = "tile " + receivedData.pl_1_3_color[5]
+				document.getElementById("pl_7").textContent = receivedData.pl_1_3[6]
+				document.getElementById("pl_7").className = "tile " + receivedData.pl_1_3_color[6]
+				document.getElementById("pl_8").textContent = receivedData.pl_1_3[7]
+				document.getElementById("pl_8").className = "tile " + receivedData.pl_1_3_color[7]
+				document.getElementById("pl_9").textContent = receivedData.pl_1_3[8]
+				document.getElementById("pl_9").className = "tile " + receivedData.pl_1_3_color[8]
+
+				document.getElementById("pl_sum_1").textContent = receivedData.pl_1_2_3[0]
+				document.getElementById("pl_sum_2").textContent = receivedData.pl_1_2_3[1]
+				document.getElementById("pl_sum_3").textContent = receivedData.pl_1_2_3[2]
+
+				document.getElementById("op_1").textContent = receivedData.op_1_3[0]
+				document.getElementById("op_1").className = "tile " + receivedData.op_1_3_color[0]
+				document.getElementById("op_2").textContent = receivedData.op_1_3[1]
+				document.getElementById("op_2").className = "tile " + receivedData.op_1_3_color[1]
+				document.getElementById("op_3").textContent = receivedData.op_1_3[2]
+				document.getElementById("op_3").className = "tile " + receivedData.op_1_3_color[2]
+				document.getElementById("op_4").textContent = receivedData.op_1_3[3]
+				document.getElementById("op_4").className = "tile " + receivedData.op_1_3_color[3]
+				document.getElementById("op_5").textContent = receivedData.op_1_3[4]
+				document.getElementById("op_5").className = "tile " + receivedData.op_1_3_color[4]
+				document.getElementById("op_6").textContent = receivedData.op_1_3[5]
+				document.getElementById("op_6").className = "tile " + receivedData.op_1_3_color[5]
+				document.getElementById("op_7").textContent = receivedData.op_1_3[6]
+				document.getElementById("op_7").className = "tile " + receivedData.op_1_3_color[6]
+				document.getElementById("op_8").textContent = receivedData.op_1_3[7]
+				document.getElementById("op_8").className = "tile " + receivedData.op_1_3_color[7]
+				document.getElementById("op_9").textContent = receivedData.op_1_3[8]
+				document.getElementById("op_9").className = "tile " + receivedData.op_1_3_color[8]
+				
+				document.getElementById("op_sum_1").textContent = receivedData.op_1_2_3[0]
+				document.getElementById("op_sum_2").textContent = receivedData.op_1_2_3[1]
+				document.getElementById("op_sum_3").textContent = receivedData.op_1_2_3[2]
+
+				document.getElementById("op_count").textContent = receivedData.op_count
+
+				if (receivedData.pl_current_count == "") {
+					document.getElementById("pl_lock").className = "board"
+					document.getElementById("op_lock").className = "board opponent-board"
+				} else {
+					document.getElementById("pl_lock").className = "board opponent-board"
+					document.getElementById("op_lock").className = "board"
+				}
+
+				document.getElementById("pl_current_count").textContent = receivedData.pl_current_count
+				document.getElementById("op_current_count").textContent = receivedData.op_current_count
+
+
+				document.getElementById("pl_2").className
+
+                if (receivedData.status_games == "ending") {
+                    var banner = document.createElement('div');
+                    banner.className = 'winner-banner';
+                    banner.textContent = receivedData.pl_win;
+                    document.body.appendChild(banner);
+                }
+                
+            };
+            function sendMessage(event) {
+                var input = document.getElementById("messageText")
+				var messageData = {
+					user_name: client_name,
+					text: input.value
+				};
+			
+				// Сериализация JSON-объекта в строку перед отправкой
+				ws.send(JSON.stringify(messageData));
+                input.value = 0
+                event.preventDefault()
+            }
+        </script>
+</div>
+
+
+<!-- Winner Banner -->
+{% if status_games == "ending" %}
+<div class="winner-banner">
+    {{pl_win}}
+</div>
+{% endif %}
+{% endblock content %}

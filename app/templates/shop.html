@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block content %}
+<main>
+    <h2>Магазин</h2>
+	{% if shop_status %}
+		<div class="balance-container">
+			<p>Ваш баланс: <strong id="money">{{user_data.money}}</strong></p>
+		</div>
+		<div class="shop-container">
+			{% for item in shop_items %}
+				<div class="product" id="product_{{item.id}}">
+					<img src="{{item.url}}" alt="Product 1">
+					<h3>{{item.title}}</h3>
+					<p class="price">{{item.price}} монет</p>
+					<button class="buy-button" id="{{item.id}}">Купить</button>
+				</div>
+			{% endfor %}
+		</div>
+	{% else %}
+		<h2>пуст</h2>
+		<h2>Ты купил всё)</h2>
+	{% endif %}
+  </main>
+
+  <script>
+
+	document.querySelectorAll('.buy-button').forEach(button => {
+		button.addEventListener('click', function() {
+		const id = this.id;
+	
+		// Отправляем запрос на сервер с использованием метода POST
+		fetch('/api/shop/buy', {
+			method: 'POST',
+			headers: {
+			'Content-Type': 'application/json',
+			},
+			body: JSON.stringify({ id_item: id })  // Передаём id товара в теле запроса
+		})
+		.then(response => {
+			return response.json();
+		})
+		.then(data => {
+			if (data.status) {
+				console.log('Покупка прошла успешно!');
+				document.getElementById("money").textContent = String(data.money)
+				const productDiv = document.getElementById('product_' + id);
+				productDiv.remove();
+			} else {
+				console.log('Ошибка при покупке: ' + data.message);
+			}
+		})
+		.catch(error => {
+			console.error('Ошибка:', error);
+			console.log('Произошла ошибка при покупке.');
+		});
+		});
+  });
+  </script>
+{% endblock content %}

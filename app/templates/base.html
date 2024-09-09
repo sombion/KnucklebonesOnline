@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Board</title>
+    <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+<body>
+
+<header>
+    <nav>
+        <ul class="menu">
+            {% for item in menu %}
+            {% if item.class == "menu" %}<li><a href="{{item.url}}">{{item.name}}</a></li>{% else %}{% endif %}
+            {% endfor %}
+        </ul>
+    </nav>
+    <div class="login">
+        {% for item in menu %}
+            {% if item.class == "login" %}
+                <a href="{{item.url}}">{{item.name}}</a>
+            {% endif %}
+        {% endfor %}
+    </div>
+</header>
+
+{% block content %}
+
+{% endblock content %}
+
+</body>
+</html>

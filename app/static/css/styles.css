@@ -1,0 +1,389 @@
+body {
+    background-color: #0a0a0a;
+    color: white;
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* Стили для верхнего меню */
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    width: 100%; /* Растягиваем на всю ширину экрана */
+    box-sizing: border-box; /* Учитываем padding в ширине */
+}
+
+.menu {
+    list-style-type: none;
+    display: flex;
+    gap: 20px;
+}
+
+.menu li a {
+    color: white;
+    text-decoration: none;
+    font-size: 1.2em;
+}
+
+.login a {
+    color: white;
+    text-decoration: none;
+    font-size: 1.2em;
+    padding: 10px;
+}
+
+/* Стили для центрального блока с описанием игры */
+main {
+    flex-grow: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 20px;
+    width: 100%; /* Растягиваем на всю ширину экрана */
+    box-sizing: border-box; /* Учитываем padding в ширине */
+}
+
+.description {
+    width: 100%; /* Растягиваем на всю ширину экрана */
+    max-width: none; /* Убираем ограничение максимальной ширины */
+    background-color: #2c2c2c;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.description p {
+    color: #e0e0e0;
+}
+
+.description-rules {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: space-around;
+}
+
+.play-button {
+    display: inline-block;
+    margin-top: 20px;
+    padding: 10px 20px;
+    background-color: #8b0000;
+    color: white;
+    text-decoration: none;
+    font-size: 1.5em;
+    border-radius: 5px;
+}
+
+.play-button:hover {
+    background-color: #a80000;
+}
+
+/* Стили для контактов */
+footer {
+    text-align: center;
+    padding: 20px;
+    background-color: #1a1a1a;
+    width: 100%; /* Растягиваем на всю ширину экрана */
+    box-sizing: border-box; /* Учитываем padding в ширине */
+}
+
+.contacts p {
+    margin: 5px 0;
+}
+
+
+.games {
+    background-color: #0a0a0a;
+    color: white;
+    font-family: 'Arial', sans-serif;
+    display: flex;
+    flex-direction: row-reverse;
+    align-items: center;
+    margin: 0;
+    padding: 20px;
+    gap: 20px;
+    max-height: 100%;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.player {
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+.player img {
+    width: 160px;
+    height: 160px;
+}
+
+.player-name {
+    font-size: 1.8em;
+    margin-top: 10px;
+}
+
+.player-score {
+    font-size: 2.5em;
+    margin-top: 5px;
+}
+
+.game-container {
+    display: flex;
+    flex-direction: column;
+    background-color: #2c2c2c;
+    padding: 20px;
+    border-radius: 15px;
+    gap: 30px;
+    width: 100%;
+    max-width: 250px;
+}
+
+.board {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+    background-color: #3b3b3b;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.column-headers {
+    display: flex;
+    justify-content: space-between;
+    padding: 0 10px;
+    margin: 10px 0 10px 0;
+}
+
+.column-header {
+    text-align: center;
+    font-size: 1.5em;
+    color: #ccc;
+    flex: 1;
+}
+
+.column {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+}
+
+.tile {
+    aspect-ratio: 1 / 1; /* Ensures the tile is square */
+    width: 100%; /* Tile will fill the width of its container */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.8em;
+    border-radius: 10px;
+    background-color: #3b3b3b;
+}
+
+.yellow {
+    background-color: #f5c242;
+}
+
+.white {
+    background-color: #e0e0e0;
+}
+
+.black {
+    background-color: #1a1a1a;
+}
+
+.red {
+    background-color: #ff4c4c;
+}
+
+.blue {
+    background-color: #4c9cff;
+}
+
+/* Highlight opponent's columns on hover */
+.opponent-board .column:hover {
+    background-color: rgba(255, 0, 0, 0.5);
+    cursor: pointer;
+    border-radius: 10px;
+}
+
+/* No hover effect on player's board */
+.player-field .column:hover {
+    background-color: inherit;
+    cursor: default;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .player-name {
+        font-size: 1.5em;
+    }
+
+    .player-score {
+        font-size: 2em;
+    }
+
+    .column-header {
+        font-size: 1.2em;
+    }
+
+    .tile {
+        font-size: 1.4em;
+    }
+}
+
+@media (max-width: 480px) {
+    .game-container {
+        padding: 10px;
+    }
+
+    .board {
+        gap: 10px;
+        padding: 10px;
+    }
+
+    .column-headers {
+        margin-bottom: 10px;
+    }
+
+    .column-header {
+        font-size: 1em;
+    }
+
+    .tile {
+        font-size: 1.2em;
+    }
+
+    .player img {
+        width: 40px;
+        height: 40px;
+    }
+
+    .player-name {
+        font-size: 1.2em;
+    }
+
+    .player-score {
+        font-size: 1.8em;
+    }
+}
+
+.winner-banner {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #3d3d3d;
+    color: #ffffff;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 24px;
+    text-align: center;
+    z-index: 1000;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    width: 90%;
+    min-height: 100px;
+    opacity: 0.95; /* Прозрачность 95% */
+}
+
+
+
+main {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+}
+
+.shop-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 30px;
+    justify-content: center;
+}
+
+.product {
+    background-color: #2c2c2c;
+    border-radius: 15px;
+    padding: 20px;
+    width: 200px;
+    text-align: center;
+    transition: transform 0.3s, box-shadow 0.3s;
+    cursor: pointer;
+}
+
+.product img {
+    width: 100px;
+    height: 100px;
+    margin-bottom: 15px;
+    transition: transform 0.3s;
+}
+
+.product h3 {
+    margin: 10px 0;
+    font-size: 1.5em;
+}
+
+.product .price {
+    margin-bottom: 15px;
+    font-size: 1.2em;
+    color: #e0e0e0;
+}
+
+.product:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 10px 20px rgba(255, 255, 255, 0.2);
+}
+
+.product:hover img {
+    transform: scale(1.1);
+}
+
+.buy-button {
+    background-color: #8b0000;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 1em;
+    transition: background-color 0.3s, transform 0.3s;
+    cursor: pointer;
+}
+
+.buy-button:hover {
+    background-color: #a80000;
+    transform: scale(1.05);
+}
+
+footer {
+    text-align: center;
+    padding: 20px;
+    background-color: #1a1a1a;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+@media (max-width: 768px) {
+    .product {
+        width: 150px;
+    }
+
+    .product img {
+        width: 80px;
+        height: 80px;
+    }
+}
+
+
+.balance-container {
+    top: 40px;
+    right: 10px;
+    font-size: 0.9em;
+}
